@@ -19,9 +19,10 @@ Usage example 1:
 --]================]
 if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then return end
 
-local MAJOR, MINOR = "LibClassicDurations", 64
+local MAJOR, MINOR = "LibClassicDurations", 65
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
+print('BestMageAddon ON')
 
 lib.callbacks = lib.callbacks or LibStub("CallbackHandler-1.0"):New(lib)
 lib.frame = lib.frame or CreateFrame("Frame")

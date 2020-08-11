@@ -3,9 +3,10 @@
 ## Version: 1.13.5.1
 ## Author: 睡吧狗命要紧 (CN-比格沃斯) <黑暗契约>
 ## Notes: 睡吧狗命要紧 (CN-比格沃斯) <黑暗契约>
-## SavedVariables: 
+## SavedVariables: LCD_Data, LCD_GUIDAccess
 
 Libs\LibStub\LibStub.lua
 Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
 Libs\LibClassicDurations\LibClassicDurations.xml
+main.xml
 main.lua
