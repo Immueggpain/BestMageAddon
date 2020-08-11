@@ -22,7 +22,7 @@ if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then return end
 local MAJOR, MINOR = "LibClassicDurations", 164
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
-print('BestMageAddon lib '..MINOR..' ON')
+print('BestMageAddon cross reload ON')
 
 lib.callbacks = lib.callbacks or LibStub("CallbackHandler-1.0"):New(lib)
 lib.frame = lib.frame or CreateFrame("Frame")
