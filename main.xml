@@ -1,0 +1,26 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	<Frame name="BestMageAddonIconTemplate" enableMouse="false" toplevel="true" movable="false" virtual="true">
+		<Size>
+			<AbsDimension x="35" y="35"/>
+		</Size>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture parentKey="texture">
+					<Size>
+						<AbsDimension x="35" y="35"/>
+					</Size>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Script file="Cooldown.lua"/>
+			<Cooldown setAllPoints="true" hidden="true" parentKey="cooldown">
+				<SwipeTexture>
+					<Color r="0" g="0" b="0" a="0.8"/>
+				</SwipeTexture>
+				<EdgeTexture file="Interface\Cooldown\edge"/>
+			</Cooldown>
+		</Frames>
+	</Frame>
+</Ui>

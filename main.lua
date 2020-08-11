@@ -1,12 +1,49 @@
 
 local addonName = 'BestMageAddon'
 
+--use LibClassicDurations
+local LibClassicDurations = LibStub("LibClassicDurations")
+LibClassicDurations:Register(addonName)
+local UnitAuraMy = LibClassicDurations.UnitAuraWrapper
+print(UnitAuraMy)
+
+--create icon frames
+local iconTemplateName = 'BestMageAddonIconTemplate'
+
+local iconCenter1 = CreateFrame( "Frame", nil, UIParent, iconTemplateName )
+iconCenter1:SetPoint("CENTER", UIParent, "CENTER", -36, 100);
+iconCenter1.texture:SetTexture(nil)
+iconCenter1.cooldown:SetDrawEdge(true)
+
+local iconCenter2 = CreateFrame( "Frame", nil, UIParent, iconTemplateName )
+iconCenter2:SetPoint("CENTER", UIParent, "CENTER", 36, 100);
+iconCenter2.texture:SetTexture(nil)
+iconCenter2.cooldown:SetDrawEdge(true)
+
 local function onUpdateSlow()
+	iconCenter1.texture:SetTexture(nil)
+	iconCenter1.cooldown:Clear()
+	iconCenter2.texture:SetTexture(nil)
+	iconCenter2.cooldown:Clear()
+	
 	if UnitIsEnemy("player","target") then
 		for i = 1, 40 do
-			local name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod = UnitAura("target", i, "HARMFUL")
+			local name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod = UnitAuraMy("target", i, "HARMFUL")
 			if name then
-				print(i, name, '|T'..icon..':16|t', count, source, spellId, castByPlayer)
+				local durLeft
+				if expirationTime and expirationTime>0 then
+					durLeft = expirationTime - GetTime()
+				else
+					durLeft = 0
+				end
+				--print(i, name, '|T'..icon..':16|t', count, source, spellId, castByPlayer, duration, durLeft)
+				if spellId == 12654 then --点燃
+					iconCenter1.texture:SetTexture(icon)
+					iconCenter1.cooldown:SetCooldown(expirationTime-duration, duration)
+				elseif spellId == 22959 then --灼烧
+					iconCenter2.texture:SetTexture(icon)
+					iconCenter2.cooldown:SetCooldown(expirationTime-duration, duration)
+				end
 			end
 		end
 	end

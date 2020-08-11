@@ -19,10 +19,10 @@ Usage example 1:
 --]================]
 if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then return end
 
-local MAJOR, MINOR = "LibClassicDurations", 164
+local MAJOR, MINOR = "LibClassicDurations", 64
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
-print('BestMageAddon ON')
+print('BestMageAddon lib '..MINOR..' ON')
 
 lib.callbacks = lib.callbacks or LibStub("CallbackHandler-1.0"):New(lib)
 lib.frame = lib.frame or CreateFrame("Frame")
@@ -212,6 +212,13 @@ f:RegisterEvent("PLAYER_LOGIN")
 function f:PLAYER_LOGIN()
     if LCD_Data and LCD_GUIDAccess then
 		print('BestMageAddon info data resumed')
+		for k,v in pairs(LCD_Data) do
+			print(k)
+		end
+		for k,v in pairs(LCD_GUIDAccess) do
+			print(k, v)
+		end
+		
         purgeOldGUIDsArgs(LCD_Data, LCD_GUIDAccess)
 
         local function MergeTable(t1, t2)
@@ -239,6 +246,14 @@ function f:PLAYER_LOGIN()
         lib.guidAccessTimes = LCD_GUIDAccess
         guidAccessTimes = lib.guidAccessTimes -- update upvalue
         MergeTable(guidAccessTimes, curSessionAccessTimes)
+		
+		print('=====')
+		for k,v in pairs(guids) do
+			print(k)
+		end
+		for k,v in pairs(guidAccessTimes) do
+			print(k, v)
+		end
     end
 
     f:RegisterEvent("PLAYER_LOGOUT")
@@ -246,6 +261,7 @@ function f:PLAYER_LOGIN()
         LCD_Data = guids
         LCD_GUIDAccess = guidAccessTimes
     end
+		
 end
 
 
