@@ -14,7 +14,6 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<Script file="Cooldown.lua"/>
 			<Cooldown setAllPoints="true" hidden="true" parentKey="cooldown">
 				<SwipeTexture>
 					<Color r="0" g="0" b="0" a="0.8"/>
