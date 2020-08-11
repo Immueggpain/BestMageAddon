@@ -9,6 +9,12 @@ local UnitAuraMy = LibClassicDurations.UnitAuraWrapper
 --create icon frames
 local iconTemplateName = 'BestMageAddonIconTemplate'
 
+local function clearIcon(icon)
+	icon.texture:SetTexture(nil)
+	icon.cooldown:Clear()
+	icon.text:SetText('')
+end
+
 local iconCenter1 = CreateFrame( "Frame", nil, UIParent, iconTemplateName )
 iconCenter1:SetPoint("CENTER", UIParent, "CENTER", -36, -100);
 iconCenter1.texture:SetTexture(nil)
@@ -16,7 +22,7 @@ iconCenter1.cooldown:SetDrawEdge(true)
 iconCenter1.cooldown:SetReverse(true)
 iconCenter1.cooldown:GetRegions():SetAlpha(0)
 iconCenter1.cooldown:HookScript("OnCooldownDone", function(self)
-	iconCenter1.texture:SetTexture(nil)
+	clearIcon(iconCenter1)
 end)
 
 local iconCenter2 = CreateFrame( "Frame", nil, UIParent, iconTemplateName )
@@ -26,18 +32,17 @@ iconCenter2.cooldown:SetDrawEdge(true)
 iconCenter2.cooldown:SetReverse(true)
 iconCenter2.cooldown:GetRegions():SetAlpha(0)
 iconCenter2.cooldown:HookScript("OnCooldownDone", function(self)
-	iconCenter2.texture:SetTexture(nil)
+	clearIcon(iconCenter2)
 end)
 
 
 local function onUpdateSlow()
-	iconCenter1.texture:SetTexture(nil)
-	iconCenter1.cooldown:Clear()
-	iconCenter2.texture:SetTexture(nil)
-	iconCenter2.cooldown:Clear()
+	clearIcon(iconCenter1)
+	clearIcon(iconCenter2)
+	
 	if UnitIsEnemy("player","target") then
 		for i = 1, 40 do
-			local name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod = UnitAuraMy("target", i, "HARMFUL")
+			local name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod, arg1, arg2 = UnitAuraMy("target", i, "HARMFUL")
 			if name then
 				local durLeft
 				if expirationTime and expirationTime>0 then
@@ -49,9 +54,11 @@ local function onUpdateSlow()
 				if spellId == 12654 then --点燃
 					iconCenter1.texture:SetTexture(icon)
 					iconCenter1.cooldown:SetCooldown(expirationTime-duration, duration)
+					iconCenter1.text:SetText(count)
 				elseif spellId == 22959 then --灼烧
 					iconCenter2.texture:SetTexture(icon)
 					iconCenter2.cooldown:SetCooldown(expirationTime-duration, duration)
+					iconCenter2.text:SetText(count)
 				end
 			end
 		end
