@@ -14,14 +14,20 @@ iconCenter1:SetPoint("CENTER", UIParent, "CENTER", -36, -100);
 iconCenter1.texture:SetTexture(nil)
 iconCenter1.cooldown:SetDrawEdge(true)
 iconCenter1.cooldown:SetReverse(true)
+iconCenter1.cooldown:GetRegions():SetAlpha(0)
+iconCenter1.cooldown:HookScript("OnCooldownDone", function(self)
+	iconCenter1.texture:SetTexture(nil)
+end)
 
 local iconCenter2 = CreateFrame( "Frame", nil, UIParent, iconTemplateName )
 iconCenter2:SetPoint("CENTER", UIParent, "CENTER", 36, -100);
 iconCenter2.texture:SetTexture(nil)
 iconCenter2.cooldown:SetDrawEdge(true)
 iconCenter2.cooldown:SetReverse(true)
-					iconCenter1.cooldown:GetRegions():SetAlpha(0)
-					iconCenter2.cooldown:GetRegions():SetAlpha(0)
+iconCenter2.cooldown:GetRegions():SetAlpha(0)
+iconCenter2.cooldown:HookScript("OnCooldownDone", function(self)
+	iconCenter2.texture:SetTexture(nil)
+end)
 
 
 local function onUpdateSlow()
