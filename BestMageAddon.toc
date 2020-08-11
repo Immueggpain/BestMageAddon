@@ -1,0 +1,8 @@
+## Interface: 11305
+## Title: 狗命的法师插件
+## Version: 1.0.0
+## Author: 睡吧狗命要紧 (CN-比格沃斯) <黑暗契约>
+## Notes: 睡吧狗命要紧 (CN-比格沃斯) <黑暗契约>
+## SavedVariables: 
+
+eat_bag.lua
