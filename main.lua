@@ -1,20 +1,28 @@
 
 local addonName = 'BestMageAddon'
 
-local function onUpdate()
-	
+local function onUpdateSlow()
+	if UnitIsEnemy("player","target") then
+		for i = 1, 40 do
+			local name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod = UnitAura("target", i, "HARMFUL")
+			if name then
+				print(i, name, '|T'..icon..':16|t', count, source, spellId, castByPlayer)
+			end
+		end
+	end
+end
+
+local timeElapsed = 0
+local function onUpdate(self, elapsed)
+	timeElapsed = timeElapsed + elapsed
+	if (timeElapsed > 1) then
+		timeElapsed = 0
+		onUpdateSlow()
+	end
 end
 
 local function onEvent(self, event, ...)
-	if event == "MERCHANT_SHOW" then
-		print("MERCHANT_SHOW", GetTime())
-	elseif event == "BAG_UPDATE" then
-		print("BAG_UPDATE", GetTime())
-	elseif event == "BAG_UPDATE_DELAYED" then
-		print("BAG_UPDATE_DELAYED", GetTime())
-	elseif event == "ITEM_PUSH" then
-		print("ITEM_PUSH", GetTime())
-	end
+	print(event, ...)
 end
 
 local function onCmd()
@@ -23,7 +31,7 @@ end
 
 --create a frame for receiving events
 local eventFrame = CreateFrame("FRAME", addonName.."_event_frame")
-eventFrame:RegisterEvent("MERCHANT_SHOW")
+--eventFrame:RegisterEvent("UNIT_AURA")
 eventFrame:SetScript("OnUpdate", onUpdate)
 eventFrame:SetScript("OnEvent", onEvent)
 
