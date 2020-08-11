@@ -19,7 +19,7 @@ Usage example 1:
 --]================]
 if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then return end
 
-local MAJOR, MINOR = "LibClassicDurations", 65
+local MAJOR, MINOR = "LibClassicDurations", 164
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
 print('BestMageAddon ON')
@@ -211,6 +211,7 @@ lib.purgeTicker = C_Timer.NewTicker( PURGE_INTERVAL, purgeOldGUIDs)
 f:RegisterEvent("PLAYER_LOGIN")
 function f:PLAYER_LOGIN()
     if LCD_Data and LCD_GUIDAccess then
+		print('BestMageAddon info data resumed')
         purgeOldGUIDsArgs(LCD_Data, LCD_GUIDAccess)
 
         local function MergeTable(t1, t2)
