@@ -211,14 +211,7 @@ lib.purgeTicker = C_Timer.NewTicker( PURGE_INTERVAL, purgeOldGUIDs)
 f:RegisterEvent("PLAYER_LOGIN")
 function f:PLAYER_LOGIN()
     if LCD_Data and LCD_GUIDAccess then
-		print('BestMageAddon info data resumed')
-		for k,v in pairs(LCD_Data) do
-			print(k)
-		end
-		for k,v in pairs(LCD_GUIDAccess) do
-			print(k, v)
-		end
-		
+		print('BestMageAddon info data resumed')		
         purgeOldGUIDsArgs(LCD_Data, LCD_GUIDAccess)
 
         local function MergeTable(t1, t2)
@@ -246,14 +239,6 @@ function f:PLAYER_LOGIN()
         lib.guidAccessTimes = LCD_GUIDAccess
         guidAccessTimes = lib.guidAccessTimes -- update upvalue
         MergeTable(guidAccessTimes, curSessionAccessTimes)
-		
-		print('=====')
-		for k,v in pairs(guids) do
-			print(k)
-		end
-		for k,v in pairs(guidAccessTimes) do
-			print(k, v)
-		end
     end
 
     f:RegisterEvent("PLAYER_LOGOUT")
