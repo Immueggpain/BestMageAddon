@@ -36,7 +36,7 @@ local function onUpdateSlow()
 				else
 					durLeft = 0
 				end
-				--print(i, name, '|T'..icon..':16|t', count, source, spellId, castByPlayer, duration, durLeft)
+				print(i, name, '|T'..icon..':16|t', count, source, spellId, castByPlayer, duration, durLeft)
 				if spellId == 12654 then --点燃
 					iconCenter1.texture:SetTexture(icon)
 					iconCenter1.cooldown:SetCooldown(expirationTime-duration, duration)
