@@ -24,4 +24,28 @@
 			</Cooldown>
 		</Frames>
 	</Frame>
+	
+	<Frame name="BestMageAddonLabelTemplate" enableMouse="false" toplevel="true" movable="false" virtual="true">
+		<Size>
+			<AbsDimension x="35" y="35"/>
+		</Size>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="text" inherits="SystemFont_Huge1_Outline">
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
+	
+	<Frame name="BestMageAddonLogTemplate" enableMouse="false" toplevel="true" movable="false" virtual="true">
+		<Size>
+			<AbsDimension x="35" y="35"/>
+		</Size>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="text" inherits="Game15Font_o1">
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
 </Ui>

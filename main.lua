@@ -1,5 +1,10 @@
 
 local addonName = 'BestMageAddon'
+local spellIDIgnite = 12654
+local spellNameIgnite, _, spellIconIgnite = GetSpellInfo(spellIDIgnite)
+local igniteHistory = {}
+local igniteHistoryForMeter = {}
+local meterWindow = 4
 
 --use LibClassicDurations
 local LibClassicDurations = LibStub("LibClassicDurations")
@@ -35,10 +40,20 @@ iconCenter2.cooldown:HookScript("OnCooldownDone", function(self)
 	clearIcon(iconCenter2)
 end)
 
+--create threat frame
+local threatFrame = CreateFrame( "Frame", nil, UIParent, "BestMageAddonLabelTemplate" )
+threatFrame:SetPoint("TOP", UIParent, "CENTER", 0, -140);
+
+--create history frame
+local historyFrame = CreateFrame( "Frame", nil, UIParent, "BestMageAddonLogTemplate" )
+historyFrame:SetPoint("CENTER", UIParent, "CENTER", 200, 0);
+historyFrame.text:SetPoint("BOTTOM", historyFrame, "BOTTOM")
+
 
 local function onUpdateSlow()
 	clearIcon(iconCenter1)
 	clearIcon(iconCenter2)
+	local threatStr = ''
 	
 	if UnitIsEnemy("player","target") then
 		for i = 1, 40 do
@@ -51,7 +66,7 @@ local function onUpdateSlow()
 					durLeft = 0
 				end
 				--print(i, name, '|T'..icon..':16|t', count, source, spellId, castByPlayer, duration, durLeft)
-				if spellId == 12654 then --点燃
+				if spellId == spellIDIgnite then --点燃
 					iconCenter1.texture:SetTexture(icon)
 					iconCenter1.cooldown:SetCooldown(expirationTime-duration, duration)
 					iconCenter1.text:SetText(count)
@@ -62,20 +77,84 @@ local function onUpdateSlow()
 				end
 			end
 		end
+		
+		--thread monitor
+		local isTanking, status, scaledPercentage, rawPercentage, threatValue = UnitDetailedThreatSituation("player","target")
+		if isTanking ~= nil then
+			--print(isTanking, status, scaledPercentage, rawPercentage, threatValue)
+			local statusInfo
+			if status == 0 then
+				statusInfo = '安全'
+			elseif status == 1 then
+				statusInfo = '仇恨超过T啦! 幸好还未OT!'
+			elseif status == 2 then
+				statusInfo = '有人仇恨超过你啦! 但怪还在看你!'
+			elseif status == 3 then
+				statusInfo = '你仇恨爆表! 怪不会放过你的!'
+			end
+			if rawPercentage == 255 then rawPercentage='主要目标!' else rawPercentage=rawPercentage..'%' end
+			threatStr = string.format('仇恨：%s %s', rawPercentage, statusInfo)
+		end
 	end
+	
+	threatFrame.text:SetText(threatStr)
+	
+	--update ignite history frame
+	local histStr = ''
+	for i, igniteProc in ipairs(igniteHistory) do
+		local spellIconIgnite, sourceName, amount = unpack(igniteProc)
+		histStr =  histStr .. "|T"..spellIconIgnite..":0|t " .. "|cff3fc6ea" .. sourceName .. "|r " .. amount .. "\n"
+	end
+	
+	local totalDamage = 0
+	local now = GetTime()
+	for i, v in pairs(igniteHistoryForMeter) do
+		local _, _, amount, timestamp = unpack(v)
+		print(timestamp , now - meterWindow)
+		if timestamp <= now - meterWindow then
+			igniteHistoryForMeter[i] = nil
+		else
+			totalDamage = totalDamage + amount
+		end
+	end
+	local dpsIgnite = totalDamage/meterWindow
+	histStr =  histStr .. 'DPS: ' .. dpsIgnite
+	
+	historyFrame.text:SetText(histStr)
 end
 
 local timeElapsed = 0
 local function onUpdate(self, elapsed)
 	timeElapsed = timeElapsed + elapsed
-	if (timeElapsed > 0.5) then
+	if (timeElapsed > 1) then
 		timeElapsed = 0
 		onUpdateSlow()
 	end
 end
 
 local function onEvent(self, event, ...)
-	print(event, ...)
+	if event == 'COMBAT_LOG_EVENT_UNFILTERED' then
+		local cleuPack = {CombatLogGetCurrentEventInfo()}
+		--print(unpack(cleuPack))
+		local timestamp, subevent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags = unpack(cleuPack)
+		local spellId, spellName, spellSchool, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing, isOffHand
+		
+		if subevent == "SPELL_PERIODIC_DAMAGE" then
+			spellId, spellName, spellSchool, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing, isOffHand = select(12, unpack(cleuPack))
+		end
+		
+		if spellName == spellNameIgnite then
+			--print(string.format("%s %s %s %d", sourceName, spellName, destName, amount))
+			
+			local igniteProc = {spellIconIgnite, sourceName, amount, timestamp}
+			table.insert(igniteHistory, igniteProc)
+			while #igniteHistory > 20 do
+				table.remove(igniteHistory, 1)
+			end
+			
+			igniteHistoryForMeter[destGUID..timestamp] = igniteProc
+		end
+	end
 end
 
 local function onCmd()
@@ -84,7 +163,7 @@ end
 
 --create a frame for receiving events
 local eventFrame = CreateFrame("FRAME", addonName.."_event_frame")
---eventFrame:RegisterEvent("UNIT_AURA")
+eventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 eventFrame:SetScript("OnUpdate", onUpdate)
 eventFrame:SetScript("OnEvent", onEvent)
 
