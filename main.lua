@@ -75,7 +75,7 @@ threatFrame:SetPoint("TOP", UIParent, "CENTER", 0, -140);
 
 --create history frame
 local historyFrame = CreateFrame( "Frame", nil, UIParent, "BestMageAddonLogTemplate" )
-historyFrame:SetPoint("CENTER", UIParent, "CENTER", 200, 0);
+historyFrame:SetPoint("CENTER", UIParent, "CENTER", 250, 0);
 historyFrame.text:SetPoint("BOTTOM", historyFrame, "BOTTOM")
 
 
