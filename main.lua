@@ -121,7 +121,7 @@ local function onUpdateSlow()
 			elseif status == 3 then
 				statusInfo = '你仇恨爆表! 怪不会放过你的!'
 			end
-			if rawPercentage == 255 then rawPercentage='主要目标!' else rawPercentage=rawPercentage..'%' end
+			if status == 3 then rawPercentage='主要目标!' else rawPercentage=rawPercentage..'%' end
 			threatStr = string.format('仇恨：%s %s', rawPercentage, statusInfo)
 		end
 	end
@@ -136,7 +136,7 @@ local function onUpdateSlow()
 	end
 	
 	local totalDamage = 0
-	local now = time()
+	local now = GetLocalTime()
 	for i, v in pairs(igniteHistoryForMeter) do
 		local _, _, amount, timestamp = unpack(v)
 		
