@@ -5,11 +5,40 @@ local spellNameIgnite, _, spellIconIgnite = GetSpellInfo(spellIDIgnite)
 local igniteHistory = {}
 local igniteHistoryForMeter = {}
 local meterWindow = 4
+local meterWIndowFalloff = 2
 
 --use LibClassicDurations
 local LibClassicDurations = LibStub("LibClassicDurations")
 LibClassicDurations:Register(addonName)
 local UnitAuraMy = LibClassicDurations.UnitAuraWrapper
+
+-- time function
+local syncTimeCO, lastSec, inSecBase
+local function GetLocalTime()
+	if inSecBase then
+		return time()+(GetTime()%1+1-inSecBase)%1
+	else
+		return time()+0.49
+	end
+end
+local function SyncLocalTime()
+	syncTimeCO = coroutine.create(function ()
+		while true do
+			if time() == lastSec then
+				coroutine.yield()
+			elseif lastSec and time() == lastSec+1 then
+				inSecBase = GetTime()%1
+				print('time synced', inSecBase)
+				return
+			else
+				lastSec = time()
+				coroutine.yield()
+			end
+		end
+	end)
+end
+SyncLocalTime()
+
 
 --create icon frames
 local iconTemplateName = 'BestMageAddonIconTemplate'
@@ -107,26 +136,35 @@ local function onUpdateSlow()
 	end
 	
 	local totalDamage = 0
-	local now = GetTime()
+	local now = time()
 	for i, v in pairs(igniteHistoryForMeter) do
 		local _, _, amount, timestamp = unpack(v)
-		print(timestamp , now - meterWindow)
-		if timestamp <= now - meterWindow then
+		
+		if timestamp <= now - meterWindow - meterWIndowFalloff then
 			igniteHistoryForMeter[i] = nil
-		else
+		elseif timestamp > now - meterWindow then
 			totalDamage = totalDamage + amount
+		else
+			totalDamage = totalDamage + amount*(timestamp-(now - meterWindow - meterWIndowFalloff))/meterWIndowFalloff
 		end
 	end
-	local dpsIgnite = totalDamage/meterWindow
-	histStr =  histStr .. 'DPS: ' .. dpsIgnite
+local dpsIgnite = totalDamage/(meterWindow+meterWIndowFalloff/2)
+	histStr =  histStr .. string.format("团队点燃DPS: %.2f", dpsIgnite)
 	
 	historyFrame.text:SetText(histStr)
 end
 
 local timeElapsed = 0
 local function onUpdate(self, elapsed)
+	if syncTimeCO ~= nil then
+		local canResume, errMsg = coroutine.resume(syncTimeCO)
+		if canResume == false then
+			syncTimeCO = nil
+		end
+	end
+	
 	timeElapsed = timeElapsed + elapsed
-	if (timeElapsed > 1) then
+	if (timeElapsed > 0.1) then
 		timeElapsed = 0
 		onUpdateSlow()
 	end
@@ -135,9 +173,10 @@ end
 local function onEvent(self, event, ...)
 	if event == 'COMBAT_LOG_EVENT_UNFILTERED' then
 		local cleuPack = {CombatLogGetCurrentEventInfo()}
-		--print(unpack(cleuPack))
 		local timestamp, subevent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags = unpack(cleuPack)
 		local spellId, spellName, spellSchool, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing, isOffHand
+		
+		--print((timestamp-GetTime())%1)
 		
 		if subevent == "SPELL_PERIODIC_DAMAGE" then
 			spellId, spellName, spellSchool, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing, isOffHand = select(12, unpack(cleuPack))
