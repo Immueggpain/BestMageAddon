@@ -71,7 +71,7 @@ end)
 
 --create threat frame
 local threatFrame = CreateFrame( "Frame", nil, UIParent, "BestMageAddonLabelTemplate" )
-threatFrame:SetPoint("TOP", UIParent, "CENTER", 0, -140);
+threatFrame:SetPoint("CENTER", UIParent, "CENTER", 0, -140);
 
 --create history frame
 local historyFrame = CreateFrame( "Frame", nil, UIParent, "BestMageAddonLogTemplate" )
@@ -187,7 +187,7 @@ local function onEvent(self, event, ...)
 			
 			local igniteProc = {spellIconIgnite, sourceName, amount, timestamp}
 			table.insert(igniteHistory, igniteProc)
-			while #igniteHistory > 20 do
+			while #igniteHistory > 18 do
 				table.remove(igniteHistory, 1)
 			end
 			
