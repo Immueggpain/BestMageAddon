@@ -78,13 +78,13 @@ local historyFrame = CreateFrame( "Frame", nil, UIParent, "BestMageAddonLogTempl
 historyFrame:SetPoint("CENTER", UIParent, "CENTER", 250, 0);
 historyFrame.text:SetPoint("BOTTOM", historyFrame, "BOTTOM")
 
-
+local lastThreatStatus
 local function onUpdateSlow()
 	clearIcon(iconCenter1)
 	clearIcon(iconCenter2)
 	local threatStr = ''
 	
-	if UnitIsEnemy("player","target") then
+	if not UnitIsFriend("player","target") then
 		for i = 1, 40 do
 			local name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod, arg1, arg2 = UnitAuraMy("target", i, "HARMFUL")
 			if name then
@@ -123,7 +123,21 @@ local function onUpdateSlow()
 			end
 			if status == 3 then rawPercentage='主要目标!' else rawPercentage=rawPercentage..'%' end
 			threatStr = string.format('仇恨：%s %s', rawPercentage, statusInfo)
+			
+			-- yell
+			if status~=lastThreatStatus then
+				if status == 0 then
+					--SendChatMessage(UnitName("target").."拉不住惹~", "PARTY")
+				elseif status == 1 then
+					--SendChatMessage("加把力!要拉住"..UnitName("target").."啦!", "PARTY")
+				elseif status == 2 then
+					--SendChatMessage("快要拉不住"..UnitName("target").."啦!", "PARTY")
+				elseif status == 3 then
+					--SendChatMessage("我拉住"..UnitName("target").."啦!", "PARTY")
+				end
+			end
 		end
+		lastThreatStatus = status
 	end
 	
 	threatFrame.text:SetText(threatStr)
