@@ -6,6 +6,7 @@ local igniteHistory = {}
 local igniteHistoryForMeter = {}
 local meterWindow = 4
 local meterWIndowFalloff = 2
+local threatPartySpeak=false
 
 --use LibClassicDurations
 local LibClassicDurations = LibStub("LibClassicDurations")
@@ -125,15 +126,15 @@ local function onUpdateSlow()
 			threatStr = string.format('仇恨：%s %s', rawPercentage, statusInfo)
 			
 			-- yell
-			if status~=lastThreatStatus then
+			if status~=lastThreatStatus and threatPartySpeak then
 				if status == 0 then
-					--SendChatMessage(UnitName("target").."拉不住惹~", "PARTY")
+					SendChatMessage(UnitName("target").."拉不住惹~", "PARTY")
 				elseif status == 1 then
-					--SendChatMessage("加把力!要拉住"..UnitName("target").."啦!", "PARTY")
+					SendChatMessage("加把力!要拉住"..UnitName("target").."啦!", "PARTY")
 				elseif status == 2 then
-					--SendChatMessage("快要拉不住"..UnitName("target").."啦!", "PARTY")
+					SendChatMessage("快要拉不住"..UnitName("target").."啦!", "PARTY")
 				elseif status == 3 then
-					--SendChatMessage("我拉住"..UnitName("target").."啦!", "PARTY")
+					SendChatMessage("我拉住"..UnitName("target").."啦!", "PARTY")
 				end
 			end
 		end
@@ -212,6 +213,7 @@ end
 
 local function onCmd()
 	print('hello this is addon')
+	threatPartySpeak = not threatPartySpeak
 end
 
 --create a frame for receiving events
@@ -224,4 +226,3 @@ eventFrame:SetScript("OnEvent", onEvent)
 local cmdName = 'hello'
 SlashCmdList[addonName..cmdName] = onCmd
 _G['SLASH_'..addonName..cmdName..'1'] = '/dog'
-_G['SLASH_'..addonName..cmdName..'1'] = '/cat'
