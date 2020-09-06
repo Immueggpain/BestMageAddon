@@ -51,7 +51,7 @@ local function clearIcon(icon)
 end
 
 local iconCenter1 = CreateFrame( "Frame", nil, UIParent, iconTemplateName )
-iconCenter1:SetPoint("CENTER", UIParent, "CENTER", -36, -100);
+iconCenter1:SetPoint("CENTER", UIParent, "CENTER", -40, -90);
 iconCenter1.texture:SetTexture(nil)
 iconCenter1.cooldown:SetDrawEdge(true)
 iconCenter1.cooldown:SetReverse(true)
@@ -61,7 +61,7 @@ iconCenter1.cooldown:HookScript("OnCooldownDone", function(self)
 end)
 
 local iconCenter2 = CreateFrame( "Frame", nil, UIParent, iconTemplateName )
-iconCenter2:SetPoint("CENTER", UIParent, "CENTER", 36, -100);
+iconCenter2:SetPoint("CENTER", UIParent, "CENTER", 40, -90);
 iconCenter2.texture:SetTexture(nil)
 iconCenter2.cooldown:SetDrawEdge(true)
 iconCenter2.cooldown:SetReverse(true)
@@ -72,7 +72,7 @@ end)
 
 --create threat frame
 local threatFrame = CreateFrame( "Frame", nil, UIParent, "BestMageAddonLabelTemplate" )
-threatFrame:SetPoint("CENTER", UIParent, "CENTER", 0, -140);
+threatFrame:SetPoint("CENTER", UIParent, "CENTER", 0, -110);
 
 --create history frame
 local historyFrame = CreateFrame( "Frame", nil, UIParent, "BestMageAddonLogTemplate" )
