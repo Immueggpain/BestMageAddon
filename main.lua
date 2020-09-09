@@ -51,7 +51,7 @@ local function clearIcon(icon)
 end
 
 local iconCenter1 = CreateFrame( "Frame", nil, UIParent, iconTemplateName )
-iconCenter1:SetPoint("CENTER", UIParent, "CENTER", -40, -90);
+iconCenter1:SetPoint("CENTER", UIParent, "CENTER", -50, -80);
 iconCenter1.texture:SetTexture(nil)
 iconCenter1.cooldown:SetDrawEdge(true)
 iconCenter1.cooldown:SetReverse(true)
@@ -61,7 +61,7 @@ iconCenter1.cooldown:HookScript("OnCooldownDone", function(self)
 end)
 
 local iconCenter2 = CreateFrame( "Frame", nil, UIParent, iconTemplateName )
-iconCenter2:SetPoint("CENTER", UIParent, "CENTER", 40, -90);
+iconCenter2:SetPoint("CENTER", UIParent, "CENTER", 50, -80);
 iconCenter2.texture:SetTexture(nil)
 iconCenter2.cooldown:SetDrawEdge(true)
 iconCenter2.cooldown:SetReverse(true)
@@ -84,6 +84,7 @@ local function onUpdateSlow()
 	clearIcon(iconCenter1)
 	clearIcon(iconCenter2)
 	local threatStr = ''
+	local igniteOwnerMsg = '\n当前目标点燃：无'
 	
 	if not UnitIsFriend("player","target") then
 		for i = 1, 40 do
@@ -100,6 +101,7 @@ local function onUpdateSlow()
 					iconCenter1.texture:SetTexture(icon)
 					iconCenter1.cooldown:SetCooldown(expirationTime-duration, duration)
 					iconCenter1.text:SetText(count)
+					igniteOwnerMsg = string.format('\n当前目标点燃：%s', source)
 				elseif spellId == 22959 then --灼烧
 					iconCenter2.texture:SetTexture(icon)
 					iconCenter2.cooldown:SetCooldown(expirationTime-duration, duration)
@@ -114,16 +116,15 @@ local function onUpdateSlow()
 			--print(isTanking, status, scaledPercentage, rawPercentage, threatValue)
 			local statusInfo
 			if status == 0 then
-				statusInfo = '安全'
+				statusInfo = 'SAFE'
 			elseif status == 1 then
-				statusInfo = '仇恨超过T啦! 幸好还未OT!'
+				statusInfo = 'almost OT'
 			elseif status == 2 then
-				statusInfo = '有人仇恨超过你啦! 但怪还在看你!'
+				statusInfo = 'OT but losing'
 			elseif status == 3 then
-				statusInfo = '你仇恨爆表! 怪不会放过你的!'
+				statusInfo = 'OT'
 			end
-			if status == 3 then rawPercentage='主要目标!' else rawPercentage=rawPercentage..'%' end
-			threatStr = string.format('仇恨：%s %s', rawPercentage, statusInfo)
+			threatStr = string.format('%s%% %s', rawPercentage, statusInfo)
 			
 			-- yell
 			if status~=lastThreatStatus and threatPartySpeak then
@@ -163,8 +164,8 @@ local function onUpdateSlow()
 			totalDamage = totalDamage + amount*(timestamp-(now - meterWindow - meterWIndowFalloff))/meterWIndowFalloff
 		end
 	end
-local dpsIgnite = totalDamage/(meterWindow+meterWIndowFalloff/2)
-	histStr =  histStr .. string.format("团队点燃DPS: %.2f", dpsIgnite)
+	local dpsIgnite = totalDamage/(meterWindow+meterWIndowFalloff/2)
+	histStr =  histStr .. string.format("团队点燃DPS: %.2f", dpsIgnite) .. igniteOwnerMsg
 	
 	historyFrame.text:SetText(histStr)
 end
@@ -202,7 +203,7 @@ local function onEvent(self, event, ...)
 			
 			local igniteProc = {spellIconIgnite, sourceName, amount, timestamp}
 			table.insert(igniteHistory, igniteProc)
-			while #igniteHistory > 18 do
+			while #igniteHistory > 15 do
 				table.remove(igniteHistory, 1)
 			end
 			
