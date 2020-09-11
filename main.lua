@@ -209,6 +209,10 @@ local function onEvent(self, event, ...)
 			
 			igniteHistoryForMeter[destGUID..timestamp] = igniteProc
 		end
+	elseif event == 'BANKFRAME_OPENED' then
+		for id = NUM_BAG_SLOTS + 1 , NUM_BAG_SLOTS + NUM_BANKBAGSLOTS do
+				OpenBag(id)
+		end
 	end
 end
 
@@ -220,6 +224,7 @@ end
 --create a frame for receiving events
 local eventFrame = CreateFrame("FRAME", addonName.."_event_frame")
 eventFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+eventFrame:RegisterEvent("BANKFRAME_OPENED")
 eventFrame:SetScript("OnUpdate", onUpdate)
 eventFrame:SetScript("OnEvent", onEvent)
 
