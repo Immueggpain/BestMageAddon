@@ -101,7 +101,7 @@ local function onUpdateSlow()
 					iconCenter1.texture:SetTexture(icon)
 					iconCenter1.cooldown:SetCooldown(expirationTime-duration, duration)
 					iconCenter1.text:SetText(count)
-					igniteOwnerMsg = string.format('\n当前目标点燃：%s', source)
+					igniteOwnerMsg = string.format('\n当前目标点燃：%s', UnitName(source))
 				elseif spellId == 22959 then --灼烧
 					iconCenter2.texture:SetTexture(icon)
 					iconCenter2.cooldown:SetCooldown(expirationTime-duration, duration)
