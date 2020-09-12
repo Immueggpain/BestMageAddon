@@ -22,7 +22,7 @@ if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then return end
 local MAJOR, MINOR = "LibClassicDurations", 64
 local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end
-print('BestMageAddon cross reload ON')
+--print('BestMageAddon cross reload ON')
 
 lib.callbacks = lib.callbacks or LibStub("CallbackHandler-1.0"):New(lib)
 lib.frame = lib.frame or CreateFrame("Frame")
@@ -211,7 +211,7 @@ lib.purgeTicker = C_Timer.NewTicker( PURGE_INTERVAL, purgeOldGUIDs)
 f:RegisterEvent("PLAYER_LOGIN")
 function f:PLAYER_LOGIN()
     if LCD_Data and LCD_GUIDAccess then
-		print('BestMageAddon info data resumed')		
+		--print('BestMageAddon info data resumed')		
         purgeOldGUIDsArgs(LCD_Data, LCD_GUIDAccess)
 
         local function MergeTable(t1, t2)

@@ -29,7 +29,7 @@ local function SyncLocalTime()
 				coroutine.yield()
 			elseif lastSec and time() == lastSec+1 then
 				inSecBase = GetTime()%1
-				print('time synced', inSecBase)
+				--print('time synced', inSecBase)
 				return
 			else
 				lastSec = time()
