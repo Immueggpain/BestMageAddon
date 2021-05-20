@@ -8,10 +8,8 @@ local meterWindow = 4
 local meterWIndowFalloff = 2
 local threatPartySpeak=false
 
---use LibClassicDurations
-local LibClassicDurations = LibStub("LibClassicDurations")
-LibClassicDurations:Register(addonName)
-local UnitAuraMy = LibClassicDurations.UnitAuraWrapper
+--remove use LibClassicDurations
+local UnitAuraMy = UnitAura
 
 -- time function
 local syncTimeCO, lastSec, inSecBase
